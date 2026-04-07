@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@500;700&display=swap');
+
+:root {
+    --cyber-yellow: #f3e600; /* Cor principal Cyberpunk */
+    --cyber-pink: #ff007f;   /* Neon Pink */
+    --cyber-blue: #00f0ff;
+    --dark-bg: #050505;
+    --card-bg: #1a1a1a;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    background-image: linear-gradient(rgba(255, 0, 127, 0.05) 1px, transparent 1px), 
+                      linear-gradient(90deg, rgba(255, 0, 127, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+
+h1, h2, h3 {
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    color: var(--cyber-yellow);
+    text-shadow: 3px 3px 0px var(--cyber-pink);
+}
+
+/* Cards de Produtos */
+.product-card {
+    background: var(--card-bg);
+    border-left: 5px solid var(--cyber-yellow);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 90%, 95% 100%, 0% 100%); /* Corte tecnológico */
+    padding: 15px;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    box-shadow: 0 0 20px rgba(243, 230, 0, 0.4);
+    transform: scale(1.02);
+}
+
+.product-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border: 1px solid var(--cyber-pink);
+    margin-bottom: 10px;
+}
+
+/* Botões Estilo Glitch */
+button {
+    background: var(--cyber-yellow);
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 900;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    cursor: pointer;
+}
+
+button.delete-btn {
+    background: var(--cyber-pink);
+    color: white;
+    margin-left: 10px;
+}
+
+/* =========================================
+   CARRINHO LATERAL CYBERPUNK
+========================================= */
+#cart-sidebar {
+    position: fixed;
+    right: -400px; /* Escondido fora da tela */
+    top: 0;
+    width: 350px;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.95);
+    border-left: 2px solid var(--cyber-pink);
+    padding: 20px;
+    box-shadow: -5px 0 20px rgba(255, 0, 127, 0.2);
+    transition: right 0.3s ease-in-out;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    overflow-y: auto;
+}
+
+#cart-sidebar.open {
+    right: 0; /* Desliza para dentro da tela */
+}
+
+.cart-item {
+    background: var(--card-bg);
+    border-left: 3px solid var(--cyber-yellow);
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-item button {
+    background: var(--cyber-pink);
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    clip-path: none; /* Tira o corte do botão pequeno */
+}
+
+/* =========================================
+   PAINEL ADMIN (DUAS COLUNAS)
+========================================= */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.admin-item {
+    background: #111;
+    padding: 15px;
+    border-left: 4px solid var(--cyber-blue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.admin-actions button {
+    padding: 8px 15px;
+    font-size: 0.8rem;
+}
+
+/* Form inputs estilizados */
+input, textarea {
+    width: 100%;
+    background: #000;
+    border: 1px solid var(--cyber-yellow);
+    color: var(--cyber-yellow);
+    padding: 10px;
+    margin-bottom: 15px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+}
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(243, 230, 0, 0.5);
+}
+
+#cart-counter {
+    position: fixed;
+    top: 25px;
+    right: 35px;
+    background: var(--cyber-yellow);
+    color: #000;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    z-index: 1100; /* Fica acima de tudo */
+    box-shadow: 0 0 20px rgba(243, 230, 0, 0.6); /* Brilho neon */
+    border: 2px solid var(--cyber-pink);
+    transition: all 0.3s ease;
+}
+
+#cart-counter:hover {
+    transform: scale(1.1);
+    background: var(--cyber-pink);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 0, 127, 0.8);
+}
