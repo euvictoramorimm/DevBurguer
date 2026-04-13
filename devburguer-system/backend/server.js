@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 const { getConnection } = require('./config/database'); // Importando nossa conexão
 const productRoutes = require('./routes/productRoutes'); 
@@ -7,6 +8,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/api/products', productRoutes);
 
 app.get('/api/status', (req, res) => {

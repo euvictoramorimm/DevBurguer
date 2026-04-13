@@ -1,113 +1,65 @@
-const { getConnection } = require('../config/database');
+const ProductModel = require('../models/productModel'); 
 
 const productController = {
-    // GET - Listar Produtos
     async getAllProducts(req, res) {
-        let connection;
         try {
-            connection = await getConnection();
-            
-            // Buscamos os produtos
-            const result = await connection.execute(`SELECT id, name, description, price, image_url FROM products`);
-            
-            // Transformamos as linhas em um formato JSON "limpo" (POJO)
-            const cleanRows = result.rows.map(row => ({ ...row }));
-
-            console.log('--- Cardápio Carregado ---');
-            res.status(200).json(cleanRows);
+            const products = await ProductModel.getAll();
+            res.status(200).json(products);
         } catch (err) {
-            console.error('❌ ERRO NO GET PRODUCTS:', err.message);
-            res.status(500).json({ error: err.message });
-        } finally {
-            if (connection) {
-                try {
-                    await connection.close();
-                } catch (e) {
-                    console.error('Erro ao fechar conexão:', e);
-                }
-            }
+            console.error('❌ Erro no GET:', err.message);
+            res.status(500).json({ error: 'Erro ao buscar o cardápio.' });
         }
     },
 
-    // POST - Criar Produto
     async createProduct(req, res) {
-        const { name, description, price, imageUrl } = req.body;
-        let connection;
-
-        try {
-            connection = await getConnection();
-            
-            const sql = `
-                INSERT INTO products (name, description, price, image_url) 
-                VALUES (:name, :description, :price, :imageUrl)
-            `;
-            
-            const binds = { name, description, price, imageUrl };
-            
-            await connection.execute(sql, binds, { autoCommit: true });
-            
-            res.status(201).json({ message: 'Hambúrguer cadastrado com sucesso!' });
-        } catch (err) {
-            console.error('❌ ERRO NO POST PRODUCT:', err.message);
-            res.status(500).json({ error: err.message });
-        } finally {
-            if (connection) {
-                try {
-                    await connection.close();
-                } catch (e) {
-                    console.error('Erro ao fechar conexão:', e);
-                }
-            }
+        // VALIDAÇÃO: O Controller é o segurança da balada
+        const { name, price } = req.body;
+        
+        if (!name || name.trim() === '') {
+            return res.status(400).json({ error: 'Operação negada: O nome do lanche é obrigatório.' });
         }
-    }, // <-- A vírgula que faltava aqui!
+        if (price === undefined || price <= 0) {
+            return res.status(400).json({ error: 'Operação negada: O preço deve ser maior que zero.' });
+        }
 
-    // U (UPDATE) - Editar um hambúrguer existente
-    async updateProduct(req, res) {
-        const { id } = req.params;
-        const { name, description, price, imageUrl } = req.body;
-        let connection;
         try {
-            connection = await getConnection();
-            const sql = `
-                UPDATE products 
-                SET name = :name, description = :description, price = :price, image_url = :imageUrl
-                WHERE id = :id
-            `;
-            await connection.execute(sql, { name, description, price, imageUrl, id }, { autoCommit: true });
-            res.json({ message: 'Burger atualizado no sistema!' });
+            await ProductModel.create(req.body);
+            res.status(201).json({ message: 'Lanche cadastrado com sucesso!' });
         } catch (err) {
-            console.error('❌ ERRO NO UPDATE PRODUCT:', err.message);
-            res.status(500).json({ error: err.message });
-        } finally {
-            if (connection) {
-                try {
-                    await connection.close();
-                } catch (e) {
-                    console.error('Erro ao fechar conexão:', e);
-                }
-            }
+            console.error('❌ Erro no POST:', err.message);
+            res.status(500).json({ error: 'Erro interno ao salvar o produto.' });
         }
     },
 
-    // D (DELETE) - Remover um lanche do cardápio
-    async deleteProduct(req, res) {
-        const { id } = req.params;
-        let connection;
+    async updateProduct(req, res) {
         try {
-            connection = await getConnection();
-            await connection.execute(`DELETE FROM products WHERE id = :id`, { id }, { autoCommit: true });
-            res.json({ message: 'Burger deletado com sucesso!' });
+            await ProductModel.update(req.params.id, req.body);
+            res.json({ message: 'Lanche atualizado!' });
         } catch (err) {
-            console.error('❌ ERRO NO DELETE PRODUCT:', err.message);
-            res.status(500).json({ error: err.message });
-        } finally {
-            if (connection) {
-                try {
-                    await connection.close();
-                } catch (e) {
-                    console.error('Erro ao fechar conexão:', e);
-                }
+            console.error('❌ Erro no PUT:', err.message);
+            res.status(500).json({ error: 'Erro ao atualizar.' });
+        }
+    },
+
+    async deleteProduct(req, res) {
+        try {
+            await ProductModel.delete(req.params.id);
+            res.json({ message: 'Lanche deletado!' });
+        } catch (err) {
+            console.error('❌ Erro no DELETE:', err.message);
+            res.status(500).json({ error: 'Erro ao deletar.' });
+        }
+    },
+    async getProductById(req, res) {
+        try {
+            const product = await ProductModel.getById(req.params.id);
+            if (!product) {
+                return res.status(404).json({ error: 'Lanche não encontrado na rede.' });
             }
+            res.status(200).json(product);
+        } catch (err) {
+            console.error('❌ Erro no GET BY ID:', err.message);
+            res.status(500).json({ error: 'Erro ao buscar o produto.' });
         }
     }
 };
