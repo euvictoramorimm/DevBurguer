@@ -1,4 +1,4 @@
-const { getConnection } = require('../config/database');
+/*const { getConnection } = require('../config/database');
 
 const ProductModel = {
     async getAll() {
@@ -60,6 +60,62 @@ const ProductModel = {
         } finally {
             if (connection) await connection.close();
         }
+    }
+};
+
+module.exports = ProductModel;*/
+
+        const { getConnection } = require('../config/database');
+
+// Função que roda assim que o servidor liga para garantir que a tabela existe
+async function initDB() {
+    const db = await getConnection();
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT,
+            price REAL NOT NULL,
+            image_url TEXT
+        )
+    `);
+}
+initDB();
+
+const ProductModel = {
+    async getAll() {
+        const db = await getConnection();
+        // Usamos AS para manter as letras maiúsculas que seu front-end (store.js/admin.js) já espera
+        return db.all(`SELECT id AS ID, name AS NAME, description AS DESCRIPTION, price AS PRICE, image_url AS IMAGE_URL FROM products`);
+    },
+
+    async getById(id) {
+        const db = await getConnection();
+        return db.get(`SELECT id AS ID, name AS NAME, description AS DESCRIPTION, price AS PRICE, image_url AS IMAGE_URL FROM products WHERE id = ?`, [id]);
+    },
+
+    async create(product) {
+        const db = await getConnection();
+        await db.run(
+            `INSERT INTO products (name, description, price, image_url) VALUES (?, ?, ?, ?)`,
+            [product.name, product.description, product.price, product.imageUrl]
+        );
+        return true;
+    },
+
+    async update(id, product) {
+        const db = await getConnection();
+        await db.run(
+            `UPDATE products SET name = ?, description = ?, price = ?, image_url = ? WHERE id = ?`,
+            [product.name, product.description, product.price, product.imageUrl, id]
+        );
+        return true;
+    },
+
+    async delete(id) {
+        const db = await getConnection();
+        await db.run(`DELETE FROM products WHERE id = ?`, [id]);
+        return true;
     }
 };
 

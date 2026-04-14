@@ -105,3 +105,59 @@ window.updateCartUI = function() {
 
     cartTotalElement.textContent = total.toFixed(2);
 };
+
+window.checkout = async function() {
+    // 1. Verifica se tem lanches no carrinho
+    if (cart.length === 0) {
+        alert('⚠️ Adicione implantes (lanches) ao carrinho primeiro!');
+        return;
+    }
+
+    // 2. Verifica se o cliente está logado (Tem o crachá?)
+    const token = localStorage.getItem('client_token');
+    if (!token) {
+        alert('🛑 Acesso Restrito: Você precisa logar na rede para finalizar a transferência!');
+        window.location.href = 'customer-auth.html'; // Redireciona para o Login
+        return;
+    }
+
+    const total = cart.reduce((sum, item) => {
+    // Tenta pegar o preço não importa como ele esteja escrito no carrinho
+    const precoDoLanche = item.PRICE || item.price || item.Price || 0;
+    return sum + parseFloat(precoDoLanche);
+}, 0);
+
+    // Trava o total em 2 casas decimais para evitar números loucos (ex: 45.50)
+    const totalFormatado = parseFloat(total.toFixed(2));
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/orders`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // 👈 O CRACHÁ ENTRA AQUI!
+            },
+            body: JSON.stringify({ items: cart, total: totalFormatado })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(`✅ ${data.message} Seu protocolo é: #${data.orderId}`);
+            cart = [];
+            updateCartUI();
+            toggleCart(); 
+            // Opcional: Manda ele direto pra tela de pedidos pra ver o lanche lá!
+            window.location.href = 'my-orders.html';
+        } else {
+            alert(`❌ Erro: ${data.error}`);
+            // Se o crachá estiver expirado, manda ele logar de novo
+            if(response.status === 401 || response.status === 403) {
+                localStorage.removeItem('client_token');
+                window.location.href = 'customer-auth.html';
+            }
+        }
+    } catch (error) {
+        alert('❌ Sistema fora do ar. Tente novamente mais tarde.');
+    }
+};

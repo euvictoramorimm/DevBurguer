@@ -1,4 +1,4 @@
-const oracledb = require('oracledb');
+/*const oracledb = require('oracledb');
 require('dotenv').config();
 
 // Ativando o modo Thin (não exige instalação de binários do Oracle Client)
@@ -17,6 +17,19 @@ async function getConnection() {
         console.error('Erro ao conectar no Oracle DB:', err);
         throw err;
     }
+}
+
+module.exports = { getConnection };*/
+
+const sqlite3 = require('sqlite3');
+const { open } = require('sqlite');
+
+// Abre (ou cria) o arquivo de banco de dados na raiz do backend
+async function getConnection() {
+    return open({
+        filename: './devburger.sqlite',
+        driver: sqlite3.Database
+    });
 }
 
 module.exports = { getConnection };

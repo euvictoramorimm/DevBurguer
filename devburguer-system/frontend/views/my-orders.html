@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos | DevBurger</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        .orders-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📋 MEUS PROTOCOLOS</h1>
+        <nav>
+            <a href="index.html">[ VOLTAR À VITRINE ]</a>
+            <button onclick="clientLogout()" style="background: var(--cyber-pink); color: white; padding: 5px 15px; cursor:pointer; margin-left: 10px;">
+                DESCONECTAR
+            </button>
+        </nav>
+    </header>
+
+    <main class="orders-container">
+        <div id="orders-list">
+            <p style="text-align: center; color: var(--cyber-blue);">Buscando registros na rede...</p>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/customer.js"></script>
+    <script>
+        // Função para deslogar
+        function clientLogout() {
+            localStorage.removeItem('client_token');
+            window.location.href = 'index.html';
+        }
+        
+        // Assim que a página abrir, executa a busca de pedidos
+        document.addEventListener('DOMContentLoaded', loadMyOrders);
+    </script>
+</body>
+</html>

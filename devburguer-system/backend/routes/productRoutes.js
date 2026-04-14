@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
+const verifyToken = require('../middlewares/authMiddleware'); // Importa o Cão de Guarda
 
-// Definindo que uma requisição GET na raiz dessa rota vai acionar a função getAllProducts
+// PÚBLICO: Qualquer um pode ver o cardápio
 router.get('/', productController.getAllProducts);
-router.post('/', productController.createProduct);
+router.get('/:id', productController.getProductById);
 
-router.put('/:id', productController.updateProduct);
-router.delete('/:id', productController.deleteProduct);
-
-router.get('/:id', productController.getProductById); 
+// PRIVADO: Só quem tem o Crachá (verifyToken) pode mexer no estoque
+router.post('/', verifyToken, productController.createProduct);
+router.put('/:id', verifyToken, productController.updateProduct);
+router.delete('/:id', verifyToken, productController.deleteProduct);
 
 module.exports = router;

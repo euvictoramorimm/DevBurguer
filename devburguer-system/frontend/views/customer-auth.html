@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Cliente | DevBurger</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+            padding: 20px;
+        }
+        .auth-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            border: 2px solid var(--cyber-yellow); /* Diferente do rosa do admin */
+            box-shadow: 0 0 30px rgba(243, 230, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .switch-text {
+            color: var(--cyber-yellow);
+            margin-top: 20px;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+        .switch-text:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🍔 DEVBURGER</h1>
+        <nav>
+            <a href="index.html">[VOLTAR AO CARDÁPIO]</a>
+        </nav>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-box">
+            
+            <div id="login-section">
+                <h2>Acessar Conta</h2>
+                <form id="client-login-form">
+                    <input type="email" id="login-email" placeholder="E-mail Criptografado" required>
+                    <input type="password" id="login-pass" placeholder="Senha de Acesso" required>
+                    <button type="submit" style="width: 100%; background: var(--cyber-yellow); color: #000;">ENTRAR NA REDE</button>
+                </form>
+                <p class="switch-text" onclick="toggleAuthForms()">Ainda não tem cadastro? Inicie aqui.</p>
+            </div>
+
+            <div id="register-section" style="display: none;">
+                <h2>Novo Registro</h2>
+                <form id="client-register-form">
+                    <input type="text" id="reg-name" placeholder="Nome Completo" required>
+                    <input type="email" id="reg-email" placeholder="E-mail Válido" required>
+                    <input type="password" id="reg-pass" placeholder="Crie uma Senha Forte" required>
+                    <button type="submit" style="width: 100%; background: var(--cyber-blue);">CADASTRAR</button>
+                </form>
+                <p class="switch-text" onclick="toggleAuthForms()">Já possui acesso? Faça o login.</p>
+            </div>
+
+            <p id="auth-message" style="margin-top: 15px; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/customer.js"></script>
+</body>
+</html>

@@ -5,6 +5,14 @@ const listContainer = document.getElementById('admin-product-list');
 // 🛡️ A SOLUÇÃO DA BAGACEIRA: Guardar a lista na memória do navegador
 let adminProducts = []; 
 
+// 🛑 SEGURANÇA DE TELA: Se não tem token no cofre, chuta pro login
+const token = localStorage.getItem('devburger_token');
+if (!token) {
+    window.location.href = 'login.html';
+}
+
+// ... resto das suas variáveis constantes ...
+
 // 1. CARREGAR PRODUTOS
 async function loadAdminProducts() {
     try {
@@ -33,6 +41,7 @@ async function loadAdminProducts() {
     }
 }
 
+
 // 2. SALVAR OU EDITAR
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -52,9 +61,13 @@ form.addEventListener('submit', async (event) => {
         statusMessage.textContent = 'Enviando pacotes de dados...';
         statusMessage.style.color = 'var(--cyber-blue)';
 
+        // 🚨 AQUI ESTÁ A MUDANÇA: O fetch agora leva o "crachá" (token)
         const response = await fetch(url, {
             method: method,
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // 👈 O CRACHÁ ENTRA AQUI!
+            },
             body: JSON.stringify(product)
         });
 
@@ -64,7 +77,9 @@ form.addEventListener('submit', async (event) => {
             resetForm();
             loadAdminProducts(); 
         } else {
-            statusMessage.textContent = '❌ Ocorreu um erro na gravação.';
+            // Se der erro de autorização, mostra na tela
+            const errorData = await response.json();
+            statusMessage.textContent = `❌ ${errorData.error || 'Erro na gravação.'}`;
             statusMessage.style.color = 'red';
         }
     } catch (error) {
@@ -93,10 +108,17 @@ window.prepareEdit = function(id) {
     window.scrollTo({ top: 0, behavior: 'smooth' }); 
 };
 
+
 // 4. DELETAR
 window.deleteProduct = async function(id) {
     if(confirm("ATENÇÃO: Deseja apagar este arquivo permanentemente da rede?")) {
-        await fetch(`${API_BASE_URL}/products/${id}`, { method: 'DELETE' });
+        // 🚨 AQUI ESTÁ A MUDANÇA NO DELETE: Mandando o crachá junto
+        await fetch(`${API_BASE_URL}/products/${id}`, { 
+            method: 'DELETE',
+            headers: { 
+                'Authorization': `Bearer ${token}` // 👈 O CRACHÁ AQUI TAMBÉM!
+            } 
+        });
         loadAdminProducts(); 
     }
 };

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,10 +11,12 @@
     <header>
         <h1>🛠️ SYSTEM OVERRIDE</h1>
         <nav>
-            <a href="../index.html" style="color: var(--cyber-pink);">[VOLTAR PARA A REDE]</a>
+            <button onclick="logout()" style="background: var(--cyber-pink); color: white; padding: 5px 15px; cursor:pointer;">
+                LOGOUT [SAIR]
+            </button>
         </nav>
     </header>
-
+    
     <main class="admin-grid">
         <section class="form-section">
             <h2>MODIFICAR DADOS</h2>
@@ -46,5 +49,11 @@
 
     <script src="../../js/api.js"></script>
     <script src="../../js/admin.js"></script>
+    <script>
+        function logout() {
+            localStorage.removeItem('devburger_token'); // Apaga o token do navegador
+            window.location.href = 'login.html'; // Manda você de volta pra tela de login
+        }
+    </script>
 </body>
 </html>

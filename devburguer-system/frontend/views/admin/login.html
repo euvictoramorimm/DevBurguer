@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Restrito | DevBurger</title>
+    <link rel="stylesheet" href="../../css/global.css">
+    <style>
+        /* Um estilo rápido só para centralizar o login no meio da tela */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        .login-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            border: 2px solid var(--cyber-pink);
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-box">
+            <h2>🔒 SYSTEM LOGIN</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="ID DE USUÁRIO" required>
+                <input type="password" id="password" placeholder="SENHA DE ACESSO" required>
+                <button type="submit" style="width: 100%;">AUTENTICAR</button>
+            </form>
+            <p id="login-error" style="color: var(--cyber-yellow); margin-top: 15px;"></p>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script src="../../js/login.js"></script>
+</body>
+</html>
